@@ -67,6 +67,48 @@ When the user asks to make, create, produce, or generate any video content — a
 
 The intelligence is in the skills, not in improvised code. An agent that reads the director skills and Layer 3 knowledge will produce significantly better output than one that calls tools directly with generic prompts.
 
+## Non-Video Work — Engineering Skills
+
+Rule Zero covers video production. Not every request is one. Work **on OpenMontage itself** —
+adding or fixing a tool, changing a pipeline, refactoring `lib/`, writing tests, triaging an
+issue, reviewing a PR, updating docs — routes here instead:
+
+**Read:** `skills/meta/engineering-workflow.md`
+
+That skill holds the routing table (which engineering skill fits which request) and the
+precedence rules. The rules exist because the names overlap dangerously with pipeline concepts:
+
+- **Rule Zero still wins.** `implement`, `prototype`, and `tdd` are not a licence to write an
+  ad-hoc script that calls a generation API. A production need with no tool behind it goes
+  through `skills/meta/capability-extension.md`.
+- **Inside a pipeline run, stage director skills win.** The `research` *skill* is not the
+  `research` *stage*; `handoff` is not `skills/meta/checkpoint-protocol.md`; `code-review` is not
+  `skills/meta/reviewer.md`. Use an engineering skill alongside a stage, never instead of one.
+- **The Decision Communication Contract does not lapse.** Announcing providers, presenting both
+  composition runtimes, appending to `decision_log`, and checkpointing all still apply while you
+  follow one of these skills.
+
+The skills themselves are vendored from https://github.com/mattpocock/skills (MIT) into
+`.agents/skills/`, with the stable set symlinked into `.claude/skills/`. Inventory, exclusions,
+and update procedure: `docs/vendored-skills/mattpocock-skills.md`.
+
+## Agent skills
+
+### Issue tracker
+
+GitHub issues on the repo `git remote -v` points at — via the `gh` CLI locally, or the GitHub MCP
+tools in web/remote sessions where `gh` is absent. See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+The five default roles, each label string equal to its name: `needs-triage`, `needs-info`,
+`ready-for-agent`, `ready-for-human`, `wontfix`. See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Single-context. `PROJECT_CONTEXT.md` is this repo's `CONTEXT.md`; ADRs go in `docs/adr/` (created
+lazily). See `docs/agents/domain.md`.
+
 ## What OpenMontage Is
 
 OpenMontage is an instruction-driven video production system. The AI agent IS the intelligence — it reads instructions (pipeline manifests + stage director skills + meta skills) and drives the pipeline using tools.
@@ -652,6 +694,12 @@ OpenMontage has three instruction layers:
 3. `.agents/skills/`
    Raw vendor or technology knowledge.
 
+`.agents/skills/` also hosts one family that is *not* video technology: the vendored engineering
+workflow skills (spec, ticket, implement, TDD, review, debug, domain modelling). They are
+orthogonal to the three layers above — they describe how to build OpenMontage, not how to build a
+video — and are routed through `skills/meta/engineering-workflow.md`. Do not reach for them from
+inside a pipeline stage.
+
 Reading order:
 
 1. registry / tool contract — discover what's available
@@ -683,6 +731,7 @@ The `.agents/skills/` directory is large. When you're not coming in through a to
 | **Capture** | `playwright-recording` (browser flows), `ffmpeg` (post) |
 | **Visualization** | `beautiful-mermaid`, `d3-viz`, `manim-composer`, `manimce-best-practices`, `manimgl-best-practices` |
 | **Media editing** | `video-edit`, `video-download`, `video-understand`, `video-toolkit`, `visual-style` |
+| **Engineering workflow (non-video)** | `research`, `to-spec`, `to-tickets`, `triage`, `wayfinder`, `implement`, `tdd`, `code-review`, `diagnosing-bugs`, `prototype`, `codebase-design`, `improve-codebase-architecture`, `domain-modeling`, `grilling`, `grill-me`, `grill-with-docs`, `resolving-merge-conflicts`, `wizard`, `handoff`, `teach`, `to-questionnaire`, `wait-what`, `writing-for-agents`, `ask-matt`, `setup-matt-pocock-skills`, `git-guardrails-claude-code`, `setup-pre-commit` — route via `skills/meta/engineering-workflow.md`, never from inside a pipeline stage |
 
 **When in doubt, read the category's meta routing file first:**
 - Picking an animation runtime? → `skills/meta/animation-runtime-selector.md` routes between Remotion primitives, GSAP plugins, framer-motion, Lottie, Manim, D3.
@@ -698,6 +747,8 @@ The `.agents/skills/` directory is large. When you're not coming in through a to
 | How does a tool actually work? | the tool's `usage_location` from the registry |
 | How should this pipeline stage behave? | `skills/pipelines/<pipeline>/...` |
 | What is the checkpoint/review policy? | `skills/meta/` |
+| I'm changing the repo, not making a video | `skills/meta/engineering-workflow.md` |
+| Where do issues, triage labels, and ADRs live? | `docs/agents/` |
 
 ## What Not To Do
 
@@ -711,3 +762,4 @@ The `.agents/skills/` directory is large. When you're not coming in through a to
 - Do not present a single unavailable tool in isolation. Always show the full capability picture: "X of Y providers configured for this capability."
 - Do not skip the Provider Menu at preflight. The user must see what they have AND what they could unlock.
 - Do not change provider, model, or render path without telling the user first and getting approval when the change is material.
+- **Do not substitute an engineering-workflow skill for a pipeline stage.** `research`, `implement`, `code-review`, and `handoff` all have same-named pipeline counterparts; inside a run, the stage director skill and `skills/meta/` win. See `skills/meta/engineering-workflow.md`.

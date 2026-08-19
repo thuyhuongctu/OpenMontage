@@ -284,6 +284,7 @@ Cross-cutting skills that apply to all pipelines:
 | Animation Runtime Selector | `meta/animation-runtime-selector.md` | Choose render runtime + animation library per scene |
 | Taste Direction | `meta/taste-direction.md` | Convert a brief into taste dials, anti-patterns, and reference strategy for proposal/playbook/atelier work |
 | Bespoke Composition (Atelier) | `meta/bespoke-composition.md` | Hand-author a composition from scratch (hero work) — no stock scene-types; routes art-direction → motion principles → engine mechanics → atelier render |
+| Engineering Workflow | `meta/engineering-workflow.md` | Route non-video work on the repo itself (spec, tickets, implement, TDD, review, debug, domain modelling) and enforce precedence over pipeline stages |
 
 ## Style Playbooks
 
@@ -303,6 +304,13 @@ Load via `styles/playbook_loader.py`: `load_playbook("clean-professional")`
 All agent skills live in `.agents/skills/` and are managed via `npx skills add`.
 Claude Code accesses them via symlinks in `.claude/skills/`.
 
+Most of them are **technology** knowledge (how an API or runtime works). One family is not: the
+vendored **engineering workflow** skills describe how to build OpenMontage rather than how to
+build a video. They sit in the same directory for discovery, but they are routed separately
+through `skills/meta/engineering-workflow.md` and must never stand in for a pipeline stage
+director. Their 6 in-progress members are vendored without symlinks, so nothing auto-invokes
+them.
+
 | Category | Installed Skills | Source |
 |----------|-----------------|--------|
 | **Video Composition** | `remotion-best-practices`, `remotion`, `hyperframes` (router), `hyperframes-core`, `hyperframes-creative`, `hyperframes-media`, `hyperframes-animation`, `hyperframes-cli`, `hyperframes-registry`, `media-use`, `motion-graphics`, `music-to-video`, `remotion-to-hyperframes`, `website-to-video` | `remotion-dev/skills`, `digitalsamba/claude-code-video-toolkit`, `heygen-com/hyperframes` (vendored v0.7.17, see `.agents/skills/hyperframes/PROVENANCE.md`) |
@@ -318,3 +326,4 @@ Claude Code accesses them via symlinks in `.claude/skills/`.
 | **AI Video/Image/TTS/Avatar (Kling Official)** | `kling-official` - official direct API auth, Classic/Turbo/Omni task protocols, multi-reference Omni syntax, internal Elements/Account Usage helpers, callback notes, TTS voice parameters, avatar/lip-sync face selection, error handling, and cost governance for `kling_official_video` / `kling_official_image` / `kling_tts` / `kling_avatar` / `kling_lip_sync` | Local OpenMontage skill |
 | **AI Video (Premium)** | `seedance-2-0` — preferred premium default (cinematic, trailer, multi-shot, lip-sync, synced audio); accessed via `seedance_video` (fal.ai) or `heygen_video` Avatar Shots | Local OpenMontage skill |
 | **Infrastructure** | `acestep`, `ltx2`, `playwright-recording` | `digitalsamba/claude-code-video-toolkit` |
+| **Engineering Workflow (non-video)** | 27 stable + 6 in-progress skills for building OpenMontage itself: `research`, `to-spec`, `to-tickets`, `triage`, `wayfinder`, `implement`, `tdd`, `code-review`, `diagnosing-bugs`, `prototype`, `codebase-design`, `improve-codebase-architecture`, `domain-modeling`, `grilling`, `grill-me`, `grill-with-docs`, `resolving-merge-conflicts`, `wizard`, `handoff`, `teach`, `to-questionnaire`, `wait-what`, `writing-for-agents`, `ask-matt`, `setup-matt-pocock-skills`, `git-guardrails-claude-code`, `setup-pre-commit` | `mattpocock/skills` (MIT, vendored v1.2.3 — see `docs/vendored-skills/mattpocock-skills.md`) |
